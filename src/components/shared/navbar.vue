@@ -2,18 +2,18 @@
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href="#" @click.prevent = "home"><i class="fas fa-subway"></i></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" :data-bs-toggle="collapseStatus?'collapse':false" :href="collapseStatus?'#navbarSupportedContent':'#'" @click.prevent = "home"><i class="fas fa-subway"></i></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" @click="collapseStatus = !collapseStatus">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li> -->
-                    <li class="nav-item"><a class="nav-link" href="#" :class="{'active':isActive.isNews}" @click.prevent="news">最新消息</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" :class="{'active':isActive.isStation}" @click.prevent="station">車站位置</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" :class="{'active':isActive.isTime}" @click.prevent="time">進站時刻</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" :class="{'active':isActive.isFare}" @click.prevent="fare">票價查詢</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" :class="{'active':isActive.isMap}" @click.prevent="map">捷運地圖</a></li>
+                    <li class="nav-item"><a class="nav-link" :class="{'active':isActive.isNews}" :data-bs-toggle="collapseStatus?'collapse':false" :href="collapseStatus?'#navbarSupportedContent':'#'" @click.prevent="news">最新消息</a></li>
+                    <li class="nav-item"><a class="nav-link" :class="{'active':isActive.isStation}" :data-bs-toggle="collapseStatus?'collapse':false" :href="collapseStatus?'#navbarSupportedContent':'#'" @click.prevent="station">車站位置</a></li>
+                    <li class="nav-item"><a class="nav-link" :class="{'active':isActive.isTime}" :data-bs-toggle="collapseStatus?'collapse':false" :href="collapseStatus?'#navbarSupportedContent':'#'" @click.prevent="time">進站時刻</a></li>
+                    <li class="nav-item"><a class="nav-link" :class="{'active':isActive.isFare}" :data-bs-toggle="collapseStatus?'collapse':false" :href="collapseStatus?'#navbarSupportedContent':'#'" @click.prevent="fare">票價查詢</a></li>
+                    <li class="nav-item"><a class="nav-link" :class="{'active':isActive.isMap}" :data-bs-toggle="collapseStatus?'collapse':false" :href="collapseStatus?'#navbarSupportedContent':'#'" @click.prevent="map">捷運地圖</a></li>
                 </ul>
                 <!-- <form class="d-flex">
                     <button class="btn btn-outline-dark" type="submit" @click.prevent="">
@@ -42,7 +42,8 @@ export default {
   data() {
     return {
       title:"台北捷運練習作品",
-      note:"Vue Project",
+      note:"Vue.js的練習作品",
+      collapseStatus:false,
       isActive: {
         isNews: false,
         isStation : false,
@@ -62,6 +63,7 @@ export default {
       this.isActive.isFare = false;
       this.isActive.isMap = false;
       this.$router.push("/");
+      if(this.collapseStatus) this.collapseStatus = !this.collapseStatus;
     },
     news() {
       this.title = "最新消息";
@@ -72,6 +74,7 @@ export default {
       this.isActive.isFare = false;
       this.isActive.isMap = false;
       this.$router.push("/news");
+      if(this.collapseStatus) this.collapseStatus = !this.collapseStatus;
     },
     station() {
       this.title = "台北捷運車站位置";
@@ -82,6 +85,7 @@ export default {
       this.isActive.isFare = false;
       this.isActive.isMap = false;
       this.$router.push("/station");
+      if(this.collapseStatus) this.collapseStatus = !this.collapseStatus;
     },
     time() {
       this.title = "台北捷運進站時刻";
@@ -92,6 +96,7 @@ export default {
       this.isActive.isFare = false;
       this.isActive.isMap = false;
       this.$router.push("/time");
+      if(this.collapseStatus) this.collapseStatus = !this.collapseStatus;
     },
     fare() {
       this.title = "台北捷運票價查詢";
@@ -102,6 +107,7 @@ export default {
       this.isActive.isFare = true;
       this.isActive.isMap = false;
       this.$router.push("/fare");
+      if(this.collapseStatus) this.collapseStatus = !this.collapseStatus;
     },
     map() {
       this.title = "台北捷運地圖";
@@ -112,6 +118,7 @@ export default {
       this.isActive.isFare = false;
       this.isActive.isMap = true;
       this.$router.push("/map");
+      if(this.collapseStatus) this.collapseStatus = !this.collapseStatus;
     }
   },
   created() {
@@ -133,7 +140,7 @@ export default {
       this.isActive.isFare = true;
     } else if (this.$route.name == 'map') {
       this.title = "台北捷運地圖";
-      this.note = "可點擊下面捷運圖的各站查看詳細資訊，資料來源:台北捷運公司",
+      this.note = "可點擊下面這張捷運圖的各站查看詳細資訊，資料來源:台北捷運公司",
       this.isActive.isMap = true;
     };
   },

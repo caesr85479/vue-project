@@ -68,7 +68,9 @@ export default {
       const vm = this;
       const api = 'https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Line/TRTC?$format=JSON';
       vm.$http.get(api).then(response => {
-        vm.line = response.data;
+        vm.line = response.data.filter(function(item) {
+          return (item.LineID != "BR" && item.LineID != "Y");
+        });
       }).catch(err => {
         if (err.response.status == "429") {
           alert("因為使用免費API，額度已使用完，請晚點再試，謝謝!");
@@ -134,8 +136,7 @@ export default {
           };
         };
 
-        timer = setInterval(vm.countProgress, 100);
-
+        vm.startProgress();
       }).catch(err => {
         if (err.response.status == "429") {
           alert("因為使用免費API，額度已使用完，請晚點再試，謝謝!");
@@ -159,6 +160,19 @@ export default {
     },
     getClosedStation() {
       const vm = this;
+      const api = `https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/TRTC?$format=JSON`;
+      vm.$http.get(api).then(response => {
+        response.data.forEach(element => {
+          calculateDistance(vm.currentPosition[0], vm.currentPosition[1], element.StationPosition.PositionLat, element.StationPosition.PositionLon, element.StationID);
+        });
+      }).catch(err => {
+        if (err.response.status == "429") {
+          alert("因為使用免費API，額度已使用完，請晚點再試，謝謝!");
+        } else {
+          alert(err);
+        };
+      });
+
       function calculateDistance(lat1, lon1, lat2, lon2, station) {
         if ((lat1 == lat2) && (lon1 == lon2)) {
           vm.distance = 0;
@@ -179,30 +193,21 @@ export default {
           };
         };
       };
-
-      const api = `https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/TRTC?$format=JSON`;
-      vm.$http.get(api).then(response => {
-        response.data.forEach(element => {
-          calculateDistance(vm.currentPosition[0], vm.currentPosition[1], element.StationPosition.PositionLat, element.StationPosition.PositionLon, element.StationID);
-        });
-      }).catch(err => {
-        if (err.response.status == "429") {
-          alert("因為使用免費API，額度已使用完，請晚點再試，謝謝!");
-        } else {
-          alert(err);
-        };
-      });
     },
-    countProgress() {
+    startProgress() {
       const vm = this;
-      if (vm.progress < 0) {
-        vm.progress = 100;
-        clearInterval(timer);
-        vm.checkTime();
-      } else {
-        vm.progress = vm.progress - 0.2;
+      timer = setInterval(countProgress, 100);
+
+      function countProgress() {
+        if (vm.progress <= 0) {
+          vm.progress = 100;
+          clearInterval(timer);
+          vm.checkTime();
+        } else {
+          vm.progress = vm.progress - 0.2;
+        };
       };
-    }
+    }  
   },
   created() {
     this.getCurrentPosition();
